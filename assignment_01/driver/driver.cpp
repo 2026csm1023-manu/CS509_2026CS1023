@@ -14,7 +14,7 @@ void run_one_test();
 void run_all_tests();
 void run_test(string filepath);
 bool validate(ifstream &file);
-void print_result(const vector<vector<int>>& C,int M, int N,double execution_time,string algorithm);
+void print_result(const vector<vector<int>>& C,int M, int N,double execution_time, string algorithm, string output_file);
 
 
 
@@ -73,14 +73,14 @@ void run_one_test()
     cout << "Enter test filename: ";
     cin >> filename;
 
-    run_test("tests/" + filename);
+    run_test("tests/gemm_tests/" + filename);
 }
 
 
 //Run all testfiles in test folder
 void run_all_tests()
 {
-    filesystem::directory_iterator files("tests");
+    filesystem::directory_iterator files("tests/gemm_tests");
 
     for(auto file : files)
     {
@@ -115,26 +115,26 @@ void run_test(string filepath)
     }
 
 
-    // validate() already read the first line
-    // so return to beginning of file
+    //validate() already read the first line
+    //so return to beginning of file
     file.clear();
     file.seekg(0);
 
 
-    // Read dimensions
+    //Read dimensions
     int M, K, N;
 
     file >> M >> K >> N;
 
 
-    // Create matrices
+    //Create matrices
     vector<vector<int>> A(M, vector<int>(K));
     vector<vector<int>> B(K, vector<int>(N));
     vector<vector<int>> C(M, vector<int>(N, 0));
     vector<vector<int>> D(M, vector<int>(N, 0));
 
 
-    // Read matrix A
+    //Read matrix A
     for(int i=0; i<M; i++)
     {
         for(int j=0; j<K; j++)
@@ -144,7 +144,7 @@ void run_test(string filepath)
     }
 
 
-    // Read matrix B
+    //Read matrix B
     for(int i=0; i<K; i++)
     {
         for(int j=0; j<N; j++)
@@ -156,40 +156,52 @@ void run_test(string filepath)
 
     cout << "\nRunning: " << filesystem::path(filepath).filename() << endl;
 
+    string test_name = filesystem::path(filepath).stem().string();
 
     /*Execute GEMM, Record time and print results */
     start_timer();
     simple_gemm(A,B,C,M,K,N);
     double time = stop_timer();
-    print_result(C, M, N, time, "GEMM Simple");
+    print_result(C, M, N, time, "GEMM Simple","outputs/" + test_name + "_simple.txt");
 
 
     /*Execute Blocking GEMM, Record time and print results */
-    int block_size = 4;
+    int block_size = 32;
     start_timer();
     blocking_gemm(A,B,D,M,K,N,block_size);
     double blocking_time = stop_timer();
-    print_result(D,M,N,blocking_time,"GEMM Blocking");
+    print_result(D,M,N,blocking_time,"GEMM Blocking","outputs/" + test_name + "_blocking.txt");
 
     file.close();
 }
 
 //Displays the Output matrix as per the given format
-void print_result(const vector<vector<int>>& C,int M,int N,double execution_time,string algorithm)
+void print_result(const vector<vector<int>>& C,int M,int N,double execution_time,string algorithm, string output_file)
 {
-    cout << "\nAlgorithm: " << algorithm << endl;
-    cout << "Result matrix:\n";
 
-    for(int i = 0; i < M; i++)
+    ofstream out(output_file);
+
+    if (!out)
     {
-        for(int j = 0; j < N; j++)
-        {
-            cout << C[i][j] << " ";
-        }
-
-        cout << endl;
+        cout << "Error: Could not create output file\n";
+        return;
     }
 
-    cout << "Execution time: "<< execution_time<< " ms\n";
+    out << "Algorithm: " << algorithm << endl;
+    out << "Result matrix:" << endl;
+    
+
+    for(int i=0; i<M; i++)
+    {
+        for(int j=0; j<N; j++)
+        {
+            out<< C[i][j] << " ";
+        }
+
+        out << "\n";
+    }
+
+    out << "Execution time: " << execution_time << " ms\n";
+    out.close();
 }
 

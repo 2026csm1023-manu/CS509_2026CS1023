@@ -1,0 +1,5 @@
+Algorithm: GEMM Simple
+Result matrix:
+19 22 
+43 50 
+Execution time: 0.0006 ms
