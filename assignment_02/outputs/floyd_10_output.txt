@@ -1,0 +1,14 @@
+Algorithm: Floyd-Warshall
+Distance matrix:
+0 -2 1 2 5 2 0 3 4 7
+INF 0 3 4 7 8 2 5 6 9
+INF INF 0 3 4 7 5 2 5 6
+INF INF INF 0 3 4 2 5 2 5
+INF INF INF INF 0 3 1 4 5 2
+INF INF INF INF INF 0 -2 1 2 5
+INF INF INF INF INF INF 0 3 4 7
+INF INF INF INF INF INF INF 0 3 4
+INF INF INF INF INF INF INF INF 0 3
+INF INF INF INF INF INF INF INF INF 0
+Negative cycle: none
+Execution time: 0.0219 ms

@@ -189,7 +189,7 @@ void print_result(const vector<vector<int>>& C,int M,int N,double execution_time
 
     out << "Algorithm: " << algorithm << endl;
     out << "Result matrix:" << endl;
-    
+
 
     for(int i=0; i<M; i++)
     {
@@ -204,4 +204,3 @@ void print_result(const vector<vector<int>>& C,int M,int N,double execution_time
     out << "Execution time: " << execution_time << " ms\n";
     out.close();
 }
-
