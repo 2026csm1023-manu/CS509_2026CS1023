@@ -18,7 +18,8 @@ int main()
         cout << "\nSelect Assignment\n";
         cout << "1. Assignment 1\n";
         cout << "2. Assignment 2\n";
-        cout << "3. Exit\n";
+        cout << "3. Assignment 3\n";
+        cout << "4. Exit\n";
         cout << "Enter choice: ";
         cin >> choice;
 
@@ -30,7 +31,11 @@ int main()
         {
             run_assignment("assignment_02", "assignment2.exe");
         }
-        else if(choice == 3)
+        else if (choice == 3)
+        {
+            run_assignment("assignment_03", "assignment3.exe");
+        }
+        else if(choice == 4)
         {
             break;
         }
