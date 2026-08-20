@@ -124,3 +124,6 @@ void run_test(string filepath,int choice)
 
     print_mst(kruskal_result,kruskal_time,prim_result,prim_time,choice,output_file);
 }
+
+
+//g++ -std=c++17 driver/driver.cpp driver/printer.cpp driver/reader.cpp driver/timer.cpp src/csr.cpp src/kruskal.cpp src/prims.cpp -o assignment3
