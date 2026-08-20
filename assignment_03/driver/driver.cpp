@@ -16,7 +16,6 @@ using namespace std;
 void run_one_test(int choice);
 void run_all_tests(int choice);
 void run_test(string filepath,int choice);
-string get_name(string filename);
 
 int main()
 {
@@ -64,15 +63,15 @@ void run_all_tests(int choice)
 {
     try
     {
-        for(const auto&entry:filesystem::directory_iterator("tests"))
+        for(const auto& entry:filesystem::directory_iterator("tests"))
         {
-            if(entry.is_regular_file())
-            {
-                string filename=entry.path().filename().string();
+            if(!entry.is_regular_file())
+                continue;
 
-                if(filename.find("mst_")==0)
-                    run_test(entry.path().string(),choice);
-            }
+            string filename=entry.path().filename().string();
+
+            if(filename.find("mst_")==0)
+                run_test(entry.path().string(),choice);
         }
     }
     catch(...)
@@ -91,21 +90,20 @@ void run_test(string filepath,int choice)
         return;
     }
 
-    vector<vector<Edge>>graph;
+    vector<vector<Edge>> graph;
 
     if(!read_mst(file,graph))
     {
         cout<<"Error: Invalid MST input\n";
-        file.close();
         return;
     }
 
     CSR csr=make_csr(graph);
 
-    string output_file="outputs/"+get_name(filepath)+"_output.txt";
+    string output_file="outputs/"+filesystem::path(filepath).stem().string()+"_output.txt";
 
-    vector<MSTEdge>kruskal_result;
-    vector<MSTEdge>prim_result;
+    vector<MSTEdge> kruskal_result;
+    vector<MSTEdge> prim_result;
 
     double kruskal_time=0;
     double prim_time=0;
@@ -113,37 +111,16 @@ void run_test(string filepath,int choice)
     if(choice==1||choice==3)
     {
         start_timer();
-
         kruskal_result=kruskal(csr);
-
         kruskal_time=stop_timer();
     }
 
     if(choice==2||choice==3)
     {
         start_timer();
-
         prim_result=prims(csr);
-
         prim_time=stop_timer();
     }
 
     print_mst(kruskal_result,kruskal_time,prim_result,prim_time,choice,output_file);
-
-    file.close();
-}
-
-string get_name(string filename)
-{
-    size_t slash=filename.find_last_of("\\/");
-
-    if(slash!=string::npos)
-        filename=filename.substr(slash+1);
-
-    size_t dot=filename.find_last_of('.');
-
-    if(dot==string::npos)
-        return filename;
-
-    return filename.substr(0,dot);
 }
